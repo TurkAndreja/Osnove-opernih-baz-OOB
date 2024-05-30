@@ -1,7 +1,7 @@
 #Vsakič na začetku env\Scripts\activate v terminal napiši
 
-from Data.repository import Repo
-from Data.models import *
+from repository import Repo # če si v mapi Data ni treba Data.repository
+from models import *
 
 
 repo = Repo()

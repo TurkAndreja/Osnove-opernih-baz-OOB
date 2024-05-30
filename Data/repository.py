@@ -1,9 +1,9 @@
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
-import Data.auth as auth
+import auth as auth
 import datetime
 
-from Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
+from models import * # Tole naredi pri vseh trans-datotečnih razredih
 from typing import List
 
 ## V tej datoteki bomo implementirali razred Repo, ki bo vseboval metode za delo z bazo.
@@ -51,9 +51,9 @@ class Repo:
     
     def dodaj_predstavo(self, p : predstava):
         self.cur.execute("""
-            INSERT into predstava(id, id_opere, id_operne_hise, datum
+            INSERT into predstava(id_opere, id_operne_hise, datum
             cas, cena, komentar)
-            VALUES (/*ustvari nek sequence*/, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """, (p.id, #neki iz cookieja,
                   p.datum, p.cas, p.cena, p.komentar))
         self.conn.commit()

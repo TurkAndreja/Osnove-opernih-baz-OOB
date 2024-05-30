@@ -1,43 +1,50 @@
+DROP TABLE glas;
 CREATE TABLE glas (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     fach TEXT UNIQUE
 )
 
+DROP TABLE opera;
 CREATE TABLE opera (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     naslov TEXT NOT NULL,
     skladatelj TEXT NOT NULL,
     trajanje INT, --v minutah
     leto INT --krstna izvedba
 )
 
+DROP TABLE operna_hisa;
 CREATE TABLE operna_hisa (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ime TEXT NOT NULL,
     naslov TEXT UNIQUE
 )
 
+DROP TABLE uporabnik;
 CREATE TABLE uporabnik (
     username TEXT PRIMARY KEY,
     password TEXT,
     id_operne_hise INT REFERENCES operna_hisa(id)
 )
 
+DROP TABLE pevec;
 CREATE TABLE pevec (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ime TEXT NOT NULL,
     id_glasu INT REFERENCES glas(id)
 )
 
+DROP TABLE vloga;
 CREATE TABLE vloga (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ime_vloge TEXT NOT NULL,
     id_opere INT REFERENCES opera(id),
     id_glasu INT REFERENCES glas(id)
 )
 
+DROP TABLE predstava;
 CREATE TABLE predstava (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     id_opere INT REFERENCES opera(id),
     id_operne_hise INT  REFERENCES operna_hisa(id),
     datum DATE NOT NULL,
@@ -46,6 +53,7 @@ CREATE TABLE predstava (
     komentar TEXT 
 )
 
+DROP TABLE predstava_vloga;
 CREATE TABLE predstava_vloga (
     id_predstave INT  REFERENCES predstava(id),
     id_vloge INT REFERENCES vloga(id),
