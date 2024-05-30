@@ -1,0 +1,45 @@
+%rebase('osnova.html', naslov='Predstave', stran='predstave')
+
+<div >
+
+      <br>  
+    <div style="display: flex;">
+    <div style="flex:1;">
+      <table class="table">
+        <thead>
+            <tr>
+
+                <th>Skladatelj</th>
+                <th>Naslov</th>
+                <th>Operna hiša</th>  
+                <th>Lokacija</th>
+                <th>Datum</th>  
+                <th>Ura</th>  
+                <th>Cena</th>  
+                <th>Trajanje</th>  
+                <th>Komentar</th>    
+             </tr>
+        </thead>
+
+      %for predstava in predstave:
+        <tr>
+           <td>{{predstave.skladatelj}}</td>           
+           <td>{{predstave.naslov}}</td>
+           <td>{{predstave.operna_hisa}}</td>
+           <td>{{predstave.lokacija}}</td>
+           <td>{{predstave.datum}}</td>
+           <td>{{predstave.ura}}</td>
+           <td>{{predstave.cena}}</td>
+           <td>{{predstave.trajanje}}</td>
+           <td>{{predstave.komentar}}</td>
+
+        </tr>
+      %end
+      </table>
+
+
+    </div>    
+
+    </div>
+
+</div>

@@ -1,9 +1,9 @@
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
-import auth as auth
+import Data.auth as auth #ker je v drugi mapi rabimo Data. ...
 import datetime
 
-from models import * # Tole naredi pri vseh trans-datotečnih razredih
+from Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
 from typing import List
 
 ## V tej datoteki bomo implementirali razred Repo, ki bo vseboval metode za delo z bazo.
