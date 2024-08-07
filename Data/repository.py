@@ -18,7 +18,7 @@ class Repo:
     def dobi_predstave(self) -> List[predstavaDto]:
         self.cur.execute("""
             SELECT o.skladatelj, o.naslov, 
-                    oh.ime, oh.naslov, 
+                    oh.ime AS operna_hisa, oh.naslov AS lokacija, 
                     p.datum, p.cas, 
                     p.cena, o.trajanje, p.komentar
             FROM predstava p 
