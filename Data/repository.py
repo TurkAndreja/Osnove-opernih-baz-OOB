@@ -1,9 +1,9 @@
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
-import Data.auth as auth #ker je v drugi mapi rabimo Data. ...
+import auth as auth #Data.auth as auth #če je v drugi mapi rabimo Data. ...
 import datetime
 
-from Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
+from models import * #Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
 from typing import List
 
 ## V tej datoteki bomo implementirali razred Repo, ki bo vseboval metode za delo z bazo.
@@ -43,18 +43,29 @@ class Repo:
         vloge = [predstava_vlogaDto.from_dict(t) for t in self.cur.fetchall()]
         return vloge
     
-    def dobi_pevca():
+    def dobi_pevce(): # za dropdown seznam
         return
     
-    def dobi_opero():
+    def dobi_opere(): # za dropdown seznam
         return
-    
-    def dodaj_predstavo(self, p : predstava):
+
+    def dobi_opero(ime_opere) -> opera: # zato da iz imena pridobiš še ostale podatke za vnašanje
         self.cur.execute("""
-            INSERT into predstava(id_opere, id_operne_hise, datum
+            SELECT id, naslov, skladatelj, trajanje, leto
+            FROM opera
+            WHERE naslov = %s
+        """, (ime_opere))
+        
+        opera = opera.from_dict(self.cur.fetchone())
+        return opera
+
+    
+    def dodaj_predstavo(self, p : predstava): #Id je autoincrement
+        self.cur.execute("""
+            INSERT into predstava(id_operne_hise, datum
             cas, cena, komentar)
-            VALUES (%s, %s, %s, %s, %s, %s)
-            """, (p.id, #neki iz cookieja,
+            VALUES (%s, %s, %s, %s, %s)
+            """, (#neki iz cookieja,
                   p.datum, p.cas, p.cena, p.komentar))
         self.conn.commit()
         
