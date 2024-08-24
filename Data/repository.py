@@ -49,7 +49,7 @@ class Repo:
     def dobi_opere(): # za dropdown seznam
         return
 
-    def dobi_opero(ime_opere) -> opera: # zato da iz imena pridobiš še ostale podatke za vnašanje
+    def dobi_opero(self, ime_opere) -> opera: # zato da iz imena pridobiš še ostale podatke za vnašanje
         self.cur.execute("""
             SELECT id, naslov, skladatelj, trajanje, leto
             FROM opera
