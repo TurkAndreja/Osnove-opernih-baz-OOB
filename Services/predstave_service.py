@@ -27,3 +27,4 @@ class PredstaveService:
                 )
         # zapis v bazo
         self.repo.dodaj_predstavo(p)
+        self.repo.dodaj_vloge_predstavi(p)

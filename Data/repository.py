@@ -68,7 +68,17 @@ class Repo:
             """, (#neki iz cookieja,
                   p.datum, p.cas, p.cena, p.komentar))
         self.conn.commit()
-        
+
+    def dodaj_vloge_predstavi(self, p: predstava):
+        self.cur.execute("""
+            INSERT INTO predstava_vloga (id_predstave, id_vloge, id_pevca) (
+                         SELECT pr.id, vl.id, NULL
+                         FROM predstava pr, vloga vl
+                         WHERE pr.id_opere = vl.id_opere
+                         AND pr.id = %s)
+            """, (p.id))
+        self.conn.commit()
+
     def dodaj_pevca(self, p : pevec, id_vloge : int, id_predstave : int):
         self.cur.execute("""
             UPDATE predstava_vloga SET id_pevca = %s
