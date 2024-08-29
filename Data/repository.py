@@ -1,8 +1,12 @@
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
+#from Data 
 import auth as auth #Data.auth as auth #če je v drugi mapi rabimo Data. ...
 import datetime
 
+#from Data
+import models
+#from Data.
 from models import * #Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
 from typing import List
 
@@ -86,5 +90,41 @@ class Repo:
             AND id_predstave = %s
             """, (p.id, id_vloge, id_predstave))
         self.conn.commit()
+
+    def dodaj_uporabnika(self, uporabnik: uporabnik):
+        self.cur.execute("""
+            INSERT into uporabnik(username, password, id_operne_hise)
+            VALUES (%s, %s, %s)
+            """, (uporabnik.username, uporabnik.password_hash, uporabnik.id_operne_hise))
+        self.conn.commit()
+
+
+    def dobi_uporabnika(self, username: str) -> uporabnik:
+        self.cur.execute("""
+            SELECT username, password, id_operne_hise
+            FROM uporabniki
+            WHERE username = %s
+        """, (username))
+
+        u = uporabnik.from_dict(self.cur.fetchone())
+        return u
+    
+    def dobi_operno_hiso(self, id: int) -> operna_hisa:
+        self.cur.execute("""
+            SELECT id, ime, naslov
+            FROM operna_hisa
+            WHERE id = %s
+        """, (id))
+        o = operna_hisa.from_dict(self.cur.fetchone())
+        return o
+    
+    def dobi_operno_hiso_poimenu(self, ime: str) -> operna_hisa:
+        self.cur.execute("""
+            SELECT id, ime, naslov
+            FROM operna_hisa
+            WHERE ime = %s
+        """, (ime))
+        o = operna_hisa.from_dict(self.cur.fetchone())
+        return o
 
     

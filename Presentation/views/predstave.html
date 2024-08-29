@@ -1,4 +1,4 @@
-%rebase('osnova.html', naslov='Predstave', stran='predstave')
+%rebase('osnova.html', naslov='Predstave', stran='predstave', uporabnik=None)
 
 <div >
 
@@ -23,15 +23,15 @@
 
       %for predstava in predstave:
         <tr>
-           <td>{{predstave.skladatelj}}</td>           
-           <td>{{predstave.naslov}}</td>
-           <td>{{predstave.operna_hisa}}</td>
-           <td>{{predstave.lokacija}}</td>
-           <td>{{predstave.datum}}</td>
-           <td>{{predstave.ura}}</td>
-           <td>{{predstave.cena}}</td>
-           <td>{{predstave.trajanje}}</td>
-           <td>{{predstave.komentar}}</td>
+           <td>{{predstava.skladatelj}}</td>           
+           <td>{{predstava.naslov}}</td>
+           <td>{{predstava.operna_hisa}}</td>
+           <td>{{predstava.lokacija}}</td>
+           <td>{{predstava.datum}}</td>
+           <td>{{predstava.ura}}</td>
+           <td>{{predstava.cena}}</td>
+           <td>{{predstava.trajanje}}</td>
+           <td>{{predstava.komentar}}</td>
 
         </tr>
       %end

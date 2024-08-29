@@ -30,8 +30,13 @@ class operna_hisa:
 @dataclass
 class uporabnik:
     username : str = field(default="")   
-    password : str = field(default="") 
+    password_hash : str = field(default="") # v bazi je samo password
     id_operne_hise : int = field(default=0)
+
+@dataclass
+class uporabnikDto:
+    ime_operne_hise : str = field(default="")
+    username: str = field(default="")
     
 @dataclass_json
 @dataclass
