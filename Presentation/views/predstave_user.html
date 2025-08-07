@@ -1,0 +1,53 @@
+%rebase('osnova.html', naslov='Predstave', stran='predstave', uporabnik=None)
+
+<div >
+
+  <div style="margin-bottom: 20px;">
+    <a href="/dodaj_predstavo">
+        <button type="button" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+            Add New
+        </button>
+    </a>
+</div>
+
+      <br>  
+    <div style="display: flex;">
+    <div style="flex:1;">
+      <table class="table">
+        <thead>
+            <tr>
+
+                <th>Skladatelj</th>
+                <th>Naslov</th>
+                <th>Operna hiša</th>  
+                <th>Lokacija</th>
+                <th>Datum</th>  
+                <th>Ura</th>  
+                <th>Cena</th>  
+                <th>Trajanje</th>  
+                <th>Komentar</th>    
+             </tr>
+        </thead>
+
+      %for predstava in predstave:
+        <tr>
+           <td>{{predstava.skladatelj}}</td>           
+           <td>{{predstava.naslov}}</td>
+           <td>{{predstava.operna_hisa}}</td>
+           <td>{{predstava.lokacija}}</td>
+           <td>{{predstava.datum}}</td>
+           <td>{{predstava.ura}}</td>
+           <td>{{predstava.cena}}</td>
+           <td>{{predstava.trajanje}}</td>
+           <td>{{predstava.komentar}}</td>
+
+        </tr>
+      %end
+      </table>
+
+
+    </div>    
+
+    </div>
+
+</div>

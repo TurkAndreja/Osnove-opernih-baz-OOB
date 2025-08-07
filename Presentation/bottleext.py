@@ -28,12 +28,11 @@ def template(*largs, **kwargs):
 
 def template_user(*largs, **kwargs):
     """
-    Izpis predloge s podajanjem funkcije url in dodanim uporabnikom ter njegovo operno hiso.
+    Izpis predloge s podajanjem funkcije url in dodanim uporabnikom.
     """
     # Dodamo ime uporabnika, ki je prebran iz cookija direktno v vsak html, ki ga uporabimo kot template.
     usr_cookie = request.get_cookie("uporabnik")
-    usr_id_operne_hise = request.get_cookie("rola")
-    return bottle.template(*largs, **kwargs, uporabnik=usr_cookie, id_operne_hise=usr_id_operne_hise, url=bottle.url)
+    return bottle.template(*largs, **kwargs, uporabnik=usr_cookie, url=bottle.url)
 
 
 

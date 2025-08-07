@@ -21,7 +21,7 @@ def cookie_required(f):
         cookie = request.get_cookie("uporabnik")
         if cookie:
             return f(*args, **kwargs)
-        return template("index.html",uporabnik=None, id_operne_hise=None, napaka="Potrebna je prijava!")
+        return template("index.html",uporabnik=None, napaka="Potrebna je prijava!")
     return decorated
 
 
@@ -53,7 +53,7 @@ def predstave():
     Stran s predstavami, ko je uporabnik prijavljen.
     """   
     predstave = service.dobi_predstave()  
-    return template_user('predstave.html', predstave = predstave)
+    return template_user('predstave_user.html', predstave = predstave)
 
 @get('/prijavna_stran')
 def prijavna_stran():
@@ -62,15 +62,6 @@ def prijavna_stran():
     """     
     return template('prijava.html')
 
-# @get('/predstave_user')
-# @cookie_required
-# def predstave():
-#     """
-#     Stran s predstavami z možnostjo dodajanja.
-#     """   
-
-#     predstave = service.dobi_predstave()  
-#     return template('predstave_user.html', predstave = predstave)
 
 @post('/prijava')
 def prijava():
@@ -87,17 +78,20 @@ def prijava():
     prijava = auth.prijavi_uporabnika(username, password)
     if prijava:
         response.set_cookie("uporabnik", username)
-        response.set_cookie("id_operne_hise", prijava.id_operne_hise)
 
         redirect(url('/predstave_user'))
 
-        # Uporabimo kar template, kot v sami "index" funkciji
-
-        # transakcije = service.dobi_transakcije()        
-        # return template('transakcije.html', transakcije = transakcije)
-
     else:
-        return template("prijava.html", uporabnik=None, id_operne_hise=None, napaka="Neuspešna prijava. Napačno geslo ali uporabniško ime.")
+        return template("prijava.html", uporabnik=None, napaka="Neuspešna prijava. Napačno geslo ali uporabniško ime.")
+
+@get('/dodaj_predstavo')
+@cookie_required
+def dodaj_predstavo():
+    """
+    Vrne obrazec za izpolnjevanje nove predstave.
+    """
+
+    return template_user('dodaj_predstavo.html')
 
 @get('/odjava')
 def odjava():
@@ -106,9 +100,8 @@ def odjava():
     """
 
     response.delete_cookie("uporabnik")
-    response.delete_cookie("rola")
 
-    return template('index.html', uporabnik=None, id_operne_hise=None, napaka=None)
+    return template('index.html', uporabnik=None, napaka=None)
 
 
 if __name__ == "__main__":

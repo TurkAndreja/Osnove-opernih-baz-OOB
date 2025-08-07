@@ -21,7 +21,8 @@ class AuthService:
 
         user = self.repo.dobi_uporabnika(uporabnik)
         geslo_bytes = geslo.encode('utf-8')
-        succ = bcrypt.checkpw(geslo_bytes, user.password_hash.encode('utf-8'))
+
+        succ = bcrypt.checkpw(geslo_bytes, user.password.encode('utf-8'))
 
         if succ:
             hisa = self.repo.dobi_operno_hiso(user.id_operne_hise)
@@ -32,16 +33,15 @@ class AuthService:
     def dodaj_uporabnika(self, uporabnik: str, ime_operne_hise: str, geslo: str) -> uporabnikDto:
 
         bytes = geslo.encode('utf-8')
-
         salt = bcrypt.gensalt()
-
         password_hash = bcrypt.hashpw(bytes, salt)
+        password = password_hash.decode('utf-8')
 
         hisa = self.repo.dobi_operno_hiso_poimenu(ime_operne_hise)
 
         u = uporabnik(
             username=uporabnik,
-            password_hash=password_hash.decode(),
+            password=password,
             id_operne_hise=hisa.id
         )
         self.repo.dodaj_uporabnika(u)

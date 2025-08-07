@@ -1,0 +1,21 @@
+%rebase('osnova.html', naslov='Dodaj predstavo', stran='dodaj_predstavo')
+
+<form action="{{url('/dodaj_predstavo')}}" method="POST" style="width:60%">
+    <div class="form-group">
+      <label for="ime">Naslov opere:</label>
+      <input type="input" class="form-control" name="ime"  placeholder="Vnesi naslov opere">
+    </div>
+    <div class="form-group">
+      <label for="password">Geslo</label>
+      <input type="password" class="form-control" name="password" placeholder="Geslo">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Prijava</button>
+  </form>
+
+  <form action=’/predstave_dodaj’ method =’post’>
+	<span>Naslov:</span> <input name=’naslov’ type=’text’/>
+	<span>Skladatelj:</span> <input name=’naslov’ type=’text’/>
+	<span>BlaBla:</span> <input name=’naslov’ type=’text’/>
+	<input value=’Dodaj’ type=’submit’/>
+</form>

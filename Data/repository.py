@@ -1,13 +1,10 @@
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
-#from Data 
-import auth as auth #Data.auth as auth #če je v drugi mapi rabimo Data. ...
+from Data import auth as auth #Data.auth as auth #če je v drugi mapi rabimo Data. ...
 import datetime
 
-#from Data
-import models
-#from Data.
-from models import * #Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
+from Data import models
+from Data.models import * #Data.models import * # Tole naredi pri vseh trans-datotečnih razredih
 from typing import List
 
 ## V tej datoteki bomo implementirali razred Repo, ki bo vseboval metode za delo z bazo.
@@ -95,16 +92,16 @@ class Repo:
         self.cur.execute("""
             INSERT into uporabnik(username, password, id_operne_hise)
             VALUES (%s, %s, %s)
-            """, (uporabnik.username, uporabnik.password_hash, uporabnik.id_operne_hise))
+            """, (uporabnik.username, uporabnik.password, uporabnik.id_operne_hise))
         self.conn.commit()
 
 
     def dobi_uporabnika(self, username: str) -> uporabnik:
         self.cur.execute("""
             SELECT username, password, id_operne_hise
-            FROM uporabniki
+            FROM uporabnik
             WHERE username = %s
-        """, (username))
+        """, (username,))
 
         u = uporabnik.from_dict(self.cur.fetchone())
         return u
@@ -114,7 +111,7 @@ class Repo:
             SELECT id, ime, naslov
             FROM operna_hisa
             WHERE id = %s
-        """, (id))
+        """, (id,))
         o = operna_hisa.from_dict(self.cur.fetchone())
         return o
     
@@ -123,7 +120,7 @@ class Repo:
             SELECT id, ime, naslov
             FROM operna_hisa
             WHERE ime = %s
-        """, (ime))
+        """, (ime,))
         o = operna_hisa.from_dict(self.cur.fetchone())
         return o
 
