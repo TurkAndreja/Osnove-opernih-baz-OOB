@@ -124,4 +124,11 @@ class Repo:
         o = operna_hisa.from_dict(self.cur.fetchone())
         return o
 
-    
+    def dobi_vse_operne_hise(self) -> List[str]:
+        self.cur.execute("""
+            SELECT ime
+            FROM operna_hisa
+            ORDER BY ime
+        """)
+        hise = [hisa['ime'] for hisa in self.cur.fetchall()]
+        return hise

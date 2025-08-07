@@ -30,7 +30,7 @@ class AuthService:
 
         return False
 
-    def dodaj_uporabnika(self, uporabnik: str, ime_operne_hise: str, geslo: str) -> uporabnikDto:
+    def dodaj_uporabnika(self, uporabnisko_ime: str, ime_operne_hise: str, geslo: str) -> uporabnikDto:
 
         bytes = geslo.encode('utf-8')
         salt = bcrypt.gensalt()
@@ -38,12 +38,14 @@ class AuthService:
         password = password_hash.decode('utf-8')
 
         hisa = self.repo.dobi_operno_hiso_poimenu(ime_operne_hise)
+        if hisa is None:
+            raise Exception("Operna hiša s tem imenom ne obstaja.")
 
         u = uporabnik(
-            username=uporabnik,
+            username=uporabnisko_ime,
             password=password,
             id_operne_hise=hisa.id
         )
         self.repo.dodaj_uporabnika(u)
 
-        return uporabnikDto(username=uporabnik, ime_operne_hise=ime_operne_hise)
+        return uporabnikDto(username=uporabnisko_ime, ime_operne_hise=ime_operne_hise)
