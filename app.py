@@ -62,6 +62,29 @@ def prijavna_stran():
     """     
     return template('prijava.html')
 
+@get('/registracija')
+def registracija():
+    """
+    Stran z registracijo.
+    """
+    operne_hise = service.dobi_vse_operne_hise()
+    return template('registracija.html', operne_hise=operne_hise, napaka=None)
+
+@post('/registracija_post')
+def registracija_post():
+
+    username = request.forms.get('username')
+    hisa = request.forms.get('hisa')
+    password = request.forms.get('password')
+    password2 = request.forms.get('password2')
+
+    # Preveri, če se gesli ujemata
+    if password != password2:
+        operne_hise = service.dobi_vse_operne_hise()
+        return template('registracija.html', operne_hise=operne_hise, napaka="Gesli se ne ujemata!")
+
+    auth.dodaj_uporabnika(username, hisa, password)
+    return redirect('/prijavna_stran')
 
 @post('/prijava')
 def prijava():

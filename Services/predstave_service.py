@@ -28,3 +28,6 @@ class PredstaveService:
         # zapis v bazo
         self.repo.dodaj_predstavo(p)
         self.repo.dodaj_vloge_predstavi(p)
+
+    def dobi_vse_operne_hise(self) -> List[str]:
+        return self.repo.dobi_vse_operne_hise()
