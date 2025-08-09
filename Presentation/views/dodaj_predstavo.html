@@ -1,21 +1,49 @@
 %rebase('osnova.html', naslov='Dodaj predstavo', stran='dodaj_predstavo')
 
+
 <form action="{{url('/dodaj_predstavo')}}" method="POST" style="width:60%">
+  <div class="form-group">
+    <label for="opera">Opera:</label>
+    <select name="id_opere" class="form-control" required>
+      <option value="" disabled selected>Izberi opero iz seznama</option>
+      % for opera in seznam_oper:
+        <option value="{{opera['id']}}">{{ opera['naslov'] }} ({{ opera['skladatelj'] }})</option>
+      % end
+    </select>
+  </div>
     <div class="form-group">
-      <label for="ime">Naslov opere:</label>
-      <input type="input" class="form-control" name="ime"  placeholder="Vnesi naslov opere">
+      <label for="datum">Datum:</label>
+      <input type="date" class="form-control" name="datum" id="datum" required>
     </div>
     <div class="form-group">
-      <label for="password">Geslo</label>
-      <input type="password" class="form-control" name="password" placeholder="Geslo">
+      <label for="ura">Ura:</label>
+      <input type="time" class="form-control" name="ura" id="ura" required>
+    </div>
+    <div class="form-group">
+      <label for="cena">Cena (eur):</label>
+      <input type="number" class="form-control" name="cena" id="cena">
+    </div>
+    <div class="form-group">
+      <label for="komentar">Komentar:</label>
+      <input type="input" class="form-control" name="komentar" id="komentar">
     </div>
 
-    <button type="submit" class="btn btn-primary">Prijava</button>
+    <button type="submit" class="btn btn-primary">Dodaj predstavo</button>
+
   </form>
+  
 
-  <form action=’/predstave_dodaj’ method =’post’>
-	<span>Naslov:</span> <input name=’naslov’ type=’text’/>
-	<span>Skladatelj:</span> <input name=’naslov’ type=’text’/>
-	<span>BlaBla:</span> <input name=’naslov’ type=’text’/>
-	<input value=’Dodaj’ type=’submit’/>
-</form>
+
+
+  <script>
+    document.getElementById('mojaForma').addEventListener('submit', function (e) {
+      const cenaInput = this.elements['cena'];
+      const regex = /^\d+(\.\d{1,2})?$/;
+
+      if (!regex.test(cenaInput.value)) {
+        alert('Cena mora biti decimalna številka z največ dvema decimalkama!');
+        cenaInput.focus();
+        e.preventDefault(); // prepreči oddajo obrazca
+      }
+    });
+  </script>

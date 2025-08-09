@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
-from datetime import datetime
+from datetime import date, time, datetime
 
 
 @dataclass_json
@@ -82,12 +82,30 @@ class predstavaDto:
     naslov : str = field(default="")
     operna_hisa : str = field(default="")   
     lokacija : str = field(default="")  
-    datum : datetime.date = field(default=datetime.now()) 
-    ura: datetime.time = field(default=datetime.now()) 
+    datum : date = field(default_factory=date.today)  # pravi datum
+    cas: time = field(default_factory=lambda: datetime.now().time())  # pravi čas 
     cena : float = field(default=0)
     trajanje : int = field(default=0)
     komentar: str = field(default="") 
+
+
+# Tvoj problem je, da v predstavaDto definiraš datum in ura kot:
+
+# python
+# Kopiraj
+# Uredi
+# datum : datetime.date = field(default=datetime.now())
+# ura: datetime.time = field(default=datetime.now())
+# Kot sem prej omenil, tukaj se:
+
+# datetime.now() vrne celoten datetime objekt, ne samo date ali time.
+
+# In ker je to default, se ta vrednost izračuna ena sama pot ob definiciji razreda, ne ob vsakem klicu.
+
+# Poleg tega ni pretvorbe iz vrednosti iz baze (verjetno tip tuple ali dict z vrednostmi) v date in time, zato from_dict v dataclasses_json uporabi default (trenutni datum/čas).
      
+
+
 @dataclass_json
 @dataclass
 class predstava_vlogaDto:

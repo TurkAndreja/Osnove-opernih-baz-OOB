@@ -16,7 +16,7 @@
                 <th>Datum</th>  
                 <th>Ura</th>  
                 <th>Cena</th>  
-                <th>Trajanje</th>  
+                <th>Trajanje (min)</th>  
                 <th>Komentar</th>    
              </tr>
         </thead>
@@ -27,8 +27,8 @@
            <td>{{predstava.naslov}}</td>
            <td>{{predstava.operna_hisa}}</td>
            <td>{{predstava.lokacija}}</td>
-           <td>{{predstava.datum}}</td>
-           <td>{{predstava.ura}}</td>
+           <td>{{predstava.datum.strftime('%d.%m.%Y')}}</td>
+           <td>{{predstava.cas.strftime('%H:%M')}}</td>
            <td>{{predstava.cena}}</td>
            <td>{{predstava.trajanje}}</td>
            <td>{{predstava.komentar}}</td>
