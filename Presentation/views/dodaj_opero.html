@@ -1,0 +1,92 @@
+%rebase('osnova.html', naslov='Dodaj predstavo', stran='dodaj_predstavo')
+
+
+Dodajte podatke o operi!
+
+<form action="{{url('/dodaj_opero')}}" method="POST" style="width:60%">
+ 
+    <div class="form-group">
+        <label for="naslov">Naslov:</label>
+        <input type="input" class="form-control" name="naslov" id="naslov" required>
+    </div>
+    <div class="form-group">
+        <label for="skladatelj">Skladatelj:</label>
+        <input type="input" class="form-control" name="skladatelj" id="skladatelj" required>
+    </div>
+    <div class="form-group">
+        <label for="trajanje">Trajanje (min):</label>
+        <input type="input" class="form-control" name="trajanje id="trajanje">
+    </div>
+    <div class="form-group">
+        <label for="leto">Leto nastanka:</label>
+        <input type="input" class="form-control" name="leto" id="leto">
+    </div>
+    
+
+
+
+    <br>
+    Dodajte podatke o vlogah v operi!
+
+    <!-- Ostali inputi za predstavo (npr. naslov, datum, itd.) -->
+  
+    <div style="display: flex;">
+    <div style="flex:1;">
+    <table id="vlogeTabela" class="table">
+      <thead>
+        <tr>
+          <th>Vloga</th>
+          <th>Fach</th>
+          <th> </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" name="vloga[]"></td>
+          <td>
+            <select name="fach[]" required>
+              <option value="" disabled selected>Izberi iz seznama</option>
+              <option value="sopran">Sopran</option>
+              <option value="mezzosopran">Mezzosopran</option>
+              <option value="tenor">Tenor</option>
+              <option value="bariton">Bariton</option>
+              <option value="bas">Bas</option>
+            </select>
+          </td>
+          <td><button type="button" onclick="removeRow(this)">Odstrani</button></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <button type="button" onclick="addVloga()">Dodaj vlogo</button>
+  
+    <br><br>
+    <button type="submit" class="btn btn-primary">Dodaj opero z vlogami</button>
+  </form>
+  
+  <script>
+  function addVloga() {
+    const tabela = document.getElementById('vlogeTabela').getElementsByTagName('tbody')[0];
+    const novaVrstica = document.createElement('tr');
+    novaVrstica.innerHTML = `
+      <td><input type="text" name="vloga[]"></td>
+      <td>
+        <select name="fach[]" required>
+          <option value="" disabled selected>Izberi iz seznama</option>
+          <option value="sopran">Sopran</option>
+          <option value="mezzosopran">Mezzosopran</option>
+          <option value="tenor">Tenor</option>
+          <option value="bariton">Bariton</option>
+          <option value="bas">Bas</option>
+        </select>
+      </td>
+      <td><button type="button" onclick="removeRow(this)">Odstrani</button></td>
+    `;
+    tabela.appendChild(novaVrstica);
+  }
+  
+  function removeRow(gumb) {
+    const vrstica = gumb.parentNode.parentNode;
+    vrstica.remove();
+  }
+  </script>
