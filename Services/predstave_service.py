@@ -46,9 +46,7 @@ class PredstaveService:
                 komentar=komentar
                 )
         # zapis v bazo
-        self.repo.dodaj_predstavo(p)
-
-         
+        self.repo.dodaj_predstavo(p)      
         self.repo.dodaj_vloge_predstavi(p)
 
 
@@ -68,7 +66,6 @@ class PredstaveService:
         self.repo.dodaj_opero(o)
 
 
-
     def ustvari_vloge(self, dvojice: List, ime_opere: str) -> None:
 
         o = self.repo.dobi_opero(ime_opere)
@@ -83,14 +80,12 @@ class PredstaveService:
         self.repo.dodaj_vloge(nove_dvojice, id_opere)
 
 
-
     def ustvari_pevca(self, ime: str, glas_id: int) -> None:
 
         p = pevec(ime = ime,
                   id_glasu = glas_id)
         self.repo.dodaj_pevca(p)
 
-
-
         
-      
+    def dobi_vse_operne_hise(self) -> List[str]:
+        return self.repo.dobi_vse_operne_hise()

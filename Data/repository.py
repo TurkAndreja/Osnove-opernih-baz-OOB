@@ -158,6 +158,7 @@ class Repo:
                   o.naslov, o.skladatelj, o.trajanje, o.leto))
         self.conn.commit()
 
+        
     def dodaj_vloge(self, dvojice: list, id_opere: int):
         for vloga, id in dvojice:
             self.cur.execute("""
@@ -175,4 +176,12 @@ class Repo:
                   p.ime, p.id_glasu))
         self.conn.commit()
 
-
+        
+    def dobi_vse_operne_hise(self) -> List[str]:
+        self.cur.execute("""
+            SELECT ime
+            FROM operna_hisa
+            ORDER BY ime
+        """)
+        hise = [hisa['ime'] for hisa in self.cur.fetchall()]
+        return hise
