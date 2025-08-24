@@ -13,16 +13,6 @@ SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
 
 
-
-#POSKUS DEKORATORJA ZA UTF8
-# def nastavi_utf8(f):
-#     @wraps(f)
-#     def wrapper(*args, **kwargs):
-#         response.content_type = 'text/html; charset=UTF-8'
-#         return f(*args, **kwargs)
-#     return wrapper
-
-
 def cookie_required(f):
     """
     Dekorator, ki zahteva veljaven piškotek. Če piškotka ni, uporabnika preusmeri na stran za prijavo.
@@ -49,7 +39,6 @@ def index():
     return template('index.html')
 
 @get('/predstave')
-#@nastavi_utf8
 def predstave():
     """
     Stran s predstavami.
@@ -59,17 +48,52 @@ def predstave():
 
 
 @get('/predstave_user')
-#@nastavi_utf8
 @cookie_required
 def predstave():
     """
     Stran s predstavami, ko je uporabnik prijavljen.
     """   
-    predstave = service.dobi_predstave()  
-    return template_user('predstave_user.html', predstave = predstave)
+    predstave = service.dobi_predstave()
+    id_uporabnika = service.id_uporabnika()
+
+    return template_user('predstave_user.html', predstave=predstave, id_uporabnika=id_uporabnika)
+
+@get('/uredi_predstavo/<id_predstave:int>')
+@cookie_required
+def uredi_predstavo(id_predstave):
+    """
+    Stran, ki je primarno za dodajanje pevcev vlogam in sekundarno za urejanje drugih podatkov
+    v zvezi z že napovedano predstavo. Odvisna je od id_predstave, ki je zapisan v url.
+    """
+    predstava = service.dobi_predstavo(id_predstave)
+    vloge = service.dobi_vloge(id_predstave)
+    pevci = service.dobi_pevce()
+    pevci = [pevec for pevec in pevci if service.je_pevec_prost(pevec.id, id_predstave)]
+
+    return template_user('uredi_predstavo.html', predstava=predstava, vloge=vloge, pevci=pevci)
+
+@post('/uredi_predstavo/<id_predstave:int>')
+@cookie_required
+def shrani_predstavo(id_predstave):
+    """
+    Shrani posodobljene podatke predstave in vlog.
+    """
+
+    datum_str = request.forms.get('datum')
+    ura_str = request.forms.get('cas')
+    cena_str = request.forms.get('cena')
+    komentar = request.forms.get('komentar')
+
+    service.posodobi_predstavo(id_predstave, datum_str, ura_str, cena_str, komentar)
+
+    vloge = service.dobi_vloge(id_predstave)
+    for vloga in vloge:
+        id_pevca = int(request.forms.get(f'vloga_{vloga.id_vloge}'))
+        service.posodobi_vlogo(id_predstave, vloga.id_vloge, id_pevca)
+
+    redirect(url('/predstave_user'))
 
 @get('/prijavna_stran')
-#@nastavi_utf8
 def prijavna_stran():
     """
     Stran s prijavo.
@@ -89,8 +113,8 @@ def registracija_post():
 
     username = request.forms.get('username')
     hisa = request.forms.get('hisa')
-    password = request.forms.get('password')
-    password2 = request.forms.get('password2')
+    password = request.forms.getunicode('password')
+    password2 = request.forms.getunicode('password2')
 
     # Preveri, če se gesli ujemata
     if password != password2:
@@ -101,14 +125,13 @@ def registracija_post():
     return redirect('/prijavna_stran')
 
 @post('/prijava')
-#@nastavi_utf8
 def prijava():
     """
     Prijavi uporabnika v aplikacijo. Če je prijava uspešna, ustvari piškotke o uporabniku in operni hiši.
     Drugače sporoči, da je prijava neuspešna.
     """
     username = request.forms.get('username')
-    password = request.forms.get('password')
+    password = request.forms.getunicode('password')
 
     if not auth.obstaja_uporabnik(username):
         return template("index.html", napaka="Uporabnik s tem imenom ne obstaja")
@@ -123,68 +146,54 @@ def prijava():
         return template("prijava.html", uporabnik=None, napaka="Neuspešna prijava. Napačno geslo ali uporabniško ime.")
 
 
-@get('/dodaj_predstavo')
-#@nastavi_utf8
-@cookie_required
-def dodaj_predstavo():
-    """
-    Vrne obrazec za izpolnjevanje nove predstave.
-    """
-
-    return template_user('dodaj_predstavo.html')
-
-
 @get('/dodaj_opero')
-#@nastavi_utf8
 def dodaj_opero():
     """
-    Stran za dodajanje opere.  """
+    Stran za dodajanje opere.
+    """
     
     return template_user('dodaj_opero.html')
 
 
 
 @post('/dodaj_opero')
-#@nastavi_utf8
 @cookie_required
 def dodaj_opero():
 
-     # Preberemo podatke iz forme. Lahko bi uporabili kakšno dodatno metodo iz service objekta
+     # Preberemo podatke iz forme
 
-    naslov = request.forms.get('naslov')
-    skladatelj = request.forms.get('skladatelj')
+    naslov = request.forms.getunicode('naslov')
+    skladatelj = request.forms.getunicode('skladatelj')
     trajanje = request.forms.get('trajanje')
     leto = request.forms.get('leto')   
 
     service.ustvari_opero(naslov, skladatelj, trajanje, leto)
 
-    vloge = request.forms.getlist('vloga[]')
+
+    vloge = [vloga.decode('utf-8') for vloga in request.forms.getlist('vloga[]')]
     fachi = request.forms.getlist('fach[]')
     dvojice = list(zip(vloge, fachi))
 
     service.ustvari_vloge(dvojice, naslov)
-
-    #return "Opera in vloge so bile dodane!"
     
     redirect(url('/predstave_user'))
 
 
 @get('/dodaj_pevca')
-#@nastavi_utf8
 def dodaj_opero():
     """
-    Stran za dodajanje pevca.  """
+    Stran za dodajanje pevca. 
+    """
     #response.content_type = 'text/html; charset=UTF-8'
     seznam = service.dobi_seznam_glasov()
     return template_user('dodaj_pevca.html', seznam_glasov = seznam)
 
 
 @post('/dodaj_pevca')
-#@nastavi_utf8
 @cookie_required
 def dodaj_pevca():
 
-    ime = request.forms.get('ime')
+    ime = request.forms.getunicode('ime')
     id_glas = int(request.forms.get('glas'))
 
     service.ustvari_pevca(ime, id_glas)
@@ -194,17 +203,17 @@ def dodaj_pevca():
 
 
 @get('/dodaj_predstavo')
-#@nastavi_utf8
+@cookie_required
 def dodaj_predstavo():
     """
-    Stran za dodajanje predstav.  """
-    seznam = service.dobi_seznam_oper()
+    Stran za dodajanje predstav.  
+    """
+    seznam_oper = service.dobi_seznam_oper()
 
-    return template_user('dodaj_predstavo.html', seznam_oper = seznam)
+    return template_user('dodaj_predstavo.html', seznam_oper = seznam_oper)
 
 
 @post('/dodaj_predstavo')
-#@nastavi_utf8
 @cookie_required
 def dodaj_predstavo():
 
@@ -212,7 +221,7 @@ def dodaj_predstavo():
     datum_str = request.forms.get('datum') 
     ura_str = request.forms.get('ura')
     cena_str = request.forms.get('cena')  
-    komentar = request.forms.get('komentar') 
+    komentar = request.forms.getunicode('komentar') 
 
     service.ustvari_predstavo(id_opere, datum_str, ura_str, cena_str, komentar)
 
@@ -221,7 +230,6 @@ def dodaj_predstavo():
 
 
 @get('/odjava')
-#@nastavi_utf8
 def odjava():
     """
     Odjavi uporabnika iz aplikacije. Pobriše piškotke o uporabniku in njegovi roli.

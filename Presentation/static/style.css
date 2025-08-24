@@ -1,11 +1,15 @@
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
+  table-layout: auto;
+  overflow-x: auto;
 }
 
 body, html {
-  height: 100%;
-  margin: 0;
+  height: auto;
+  overflow-y: auto;
+  margin: 3em;
+  padding: 3em;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,6 +19,7 @@ body, html {
 
 .container > * {
   margin-bottom: 1.5rem;
+/*  overflow-y: auto;*/
 }
 
 h1 {
@@ -22,7 +27,7 @@ h1 {
   color: #333;
   text-align: center;
   font-family: 'Merriweather', cursive;
-  margin: 0;
+  margin: 0.5;
 }
 
 p {
@@ -37,7 +42,7 @@ p {
   display: inline-block;
   padding: 10px 20px;
   font-size: 16px;
-  font-family: 'Merriweather', cursive;
+  font-family: 'Merriweather';
   color: #fff;
   background-color: rgb(112, 112, 112);
   border: none;
@@ -45,8 +50,24 @@ p {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  margin: 10px;
-  margin-top: 2em;
+  margin: 0.5em;
+  margin-top: 0.5em;
+}
+
+.button-table {
+  display: inline-block;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-family: 'Merriweather';
+  color: #fff;
+  background-color: rgb(112, 112, 112);
+  border: none;
+  border-radius: 3px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0.5em;
+  margin-top: 0.5em;
 }
 
 .button:hover {
@@ -62,4 +83,8 @@ p {
 
 .button-wrapper {
   text-align: center;
+}
+
+.opera-table {
+  font-family: 'Merriweather', cursive;
 }

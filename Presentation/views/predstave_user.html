@@ -1,74 +1,51 @@
 %rebase('osnova.html', naslov='Predstave', stran='predstave', uporabnik=None)
 
-Dobrodošli!
+<p>Dobrodošli!</p>
 
-<div >
-
-  <div style="margin-bottom: 20px;">
-    <a href="/dodaj_predstavo">
-        <button type="button" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
-            Dodaj predstavo
-        </button>
-    </a>
+<div class="button-group" style="text-align: center; margin-bottom: 20px;">
+  <a href="/dodaj_predstavo" class="button">Dodaj predstavo</a>
+  <a href="/dodaj_opero" class="button">Dodaj opero</a>
+  <a href="/dodaj_pevca" class="button">Dodaj pevca</a>
 </div>
 
-<div style="margin-bottom: 20px;">
-  <a href="/dodaj_opero">
-      <button type="button" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
-          Dodaj opero
-      </button>
-  </a>
-</div>
-
-<div style="margin-bottom: 20px;">
-  <a href="/dodaj_pevca">
-      <button type="button" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
-          Dodaj pevca
-      </button>
-  </a>
-</div>
-
-
-<div >
-
-  <br>  
-<div style="display: flex;">
-<div style="flex:1;">
-  <table class="table">
-    <thead>
-        <tr>
-
-            <th>Skladatelj</th>
-            <th>Naslov</th>
-            <th>Operna hiša</th>  
-            <th>Lokacija</th>
-            <th>Datum</th>  
-            <th>Ura</th>  
-            <th>Cena</th>  
-            <th>Trajanje (min)</th>  
-            <th>Komentar</th>    
-         </tr>
-    </thead>
-
-  %for predstava in predstave:
-    <tr>
-       <td>{{predstava.skladatelj}}</td>           
-       <td>{{predstava.naslov}}</td>
-       <td>{{predstava.operna_hisa}}</td>
-       <td>{{predstava.lokacija}}</td>
-       <td>{{predstava.datum.strftime('%d.%m.%Y')}}</td>
-       <td>{{predstava.cas.strftime('%H:%M')}}</td>
-       <td>{{predstava.cena}}</td>
-       <td>{{predstava.trajanje}}</td>
-       <td>{{predstava.komentar}}</td>
-
-    </tr>
-  %end
-  </table>
-
-
-</div>    
-
-</div>
-
+<div>
+  <br>
+  <div style="display: flex;">
+      <div style="flex:1;">
+        <table class="table">
+              <thead>
+                  <tr>
+                      <th>Skladatelj</th>
+                      <th>Naslov</th>
+                      <th>Operna hiša</th>  
+                      <th>Lokacija</th>
+                      <th>Datum</th>  
+                      <th>Ura</th>  
+                      <th>Cena</th>  
+                      <th>Trajanje (min)</th>  
+                      <th>Komentar</th>
+                      <th>Urejanje</th>
+                  </tr>
+              </thead>
+              %for predstava in predstave:
+                  <tr>
+                      <td>{{predstava.skladatelj}}</td>           
+                      <td>{{predstava.naslov}}</td>
+                      <td>{{predstava.operna_hisa}}</td>
+                      <td>{{predstava.lokacija}}</td>
+                      <td>{{predstava.datum.strftime('%d.%m.%Y')}}</td>
+                      <td>{{predstava.cas.strftime('%H:%M')}}</td>
+                      <td>{{predstava.cena}}</td>
+                      <td>{{predstava.trajanje}}</td>
+                      <td>{{predstava.komentar}}</td>
+                      <td>
+                        %if id_uporabnika == predstava.id_operne_hise:
+                            <a href="/uredi_predstavo/{{predstava.id_predstave}}" class="button-table">Uredi</a>
+                        %end
+                    </td>
+                  </tr>
+              %end
+          </table>
+      </div>    
+  </div>
 </div>

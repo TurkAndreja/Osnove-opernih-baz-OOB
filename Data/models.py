@@ -87,30 +87,19 @@ class predstavaDto:
     cena : float = field(default=0)
     trajanje : int = field(default=0)
     komentar: str = field(default="") 
+    id_predstave: int = field(default=0) 
+    id_operne_hise: int = field(default=0) 
 
-
-# Tvoj problem je, da v predstavaDto definiraš datum in ura kot:
-
-# python
-# Kopiraj
-# Uredi
-# datum : datetime.date = field(default=datetime.now())
-# ura: datetime.time = field(default=datetime.now())
-# Kot sem prej omenil, tukaj se:
-
-# datetime.now() vrne celoten datetime objekt, ne samo date ali time.
-
-# In ker je to default, se ta vrednost izračuna ena sama pot ob definiciji razreda, ne ob vsakem klicu.
-
-# Poleg tega ni pretvorbe iz vrednosti iz baze (verjetno tip tuple ali dict z vrednostmi) v date in time, zato from_dict v dataclasses_json uporabi default (trenutni datum/čas).
-     
 
 
 @dataclass_json
 @dataclass
 class predstava_vlogaDto:
-    ime_vloge : str = field(default="") 
+    id_vloge: int = field(default=0) 
+    ime_vloge : str = field(default="")
+    id_pevca: int = field(default=0) 
     ime_pevca : str = field(default="") 
+    id_glasu: int = field(default=0)
     fach : str = field(default="")
     
     
