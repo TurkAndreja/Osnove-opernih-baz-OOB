@@ -23,7 +23,8 @@ class Repo:
             SELECT o.skladatelj, o.naslov, 
                     oh.ime AS operna_hisa, oh.naslov AS lokacija, 
                     p.datum, p.cas, 
-                    p.cena, o.trajanje, p.komentar
+                    p.cena, o.trajanje, p.komentar,
+                    p.id AS id_predstave, oh.id AS id_operne_hise
             FROM predstava p 
             JOIN operna_hisa oh ON p.id_operne_hise = oh.id
             JOIN opera o ON o.id = p.id_opere
@@ -33,10 +34,29 @@ class Repo:
         predstave = [predstavaDto.from_dict(t) for t in self.cur.fetchall()] #za vsako vrstico v slovarju, ki ga vrne cursor, naredi objekt dto in te objekte spravi v predstavo
         return predstave
     
+
+    def dobi_predstavo(self, id) -> predstavaDto:
+        self.cur.execute("""
+            SELECT o.skladatelj, o.naslov, 
+                    oh.ime AS operna_hisa, oh.naslov AS lokacija, 
+                    p.datum, p.cas, 
+                    p.cena, o.trajanje, p.komentar,
+                    p.id AS id_predstave, oh.id AS id_operne_hise
+            FROM predstava p
+            JOIN operna_hisa oh ON p.id_operne_hise = oh.id
+            JOIN opera o ON o.id = p.id_opere
+                WHERE p.id = %s
+            ORDER BY p.datum, p.cas desc
+        """, (id,))
+
+        predstava = predstavaDto.from_dict(self.cur.fetchall()[0]) #za edino vrstico v slovarju, ki ga vrne cursor, naredi objekt dto in ga spravi v predstavo
+        return predstava
+    
     
     def dobi_vloge(self, id_predstave: int) -> List[predstava_vlogaDto]:
         self.cur.execute("""
-            SELECT v.ime_vloge, p.ime_pevca, g.fach
+            SELECT v.id AS id_vloge, v.ime_vloge, p.id as id_pevca, p.ime AS ime_pevca, 
+                    g.id AS id_glasu, g.fach
             FROM predstava_vloga pv
             JOIN vloga v ON v.id = pv.id_vloge
             JOIN glas g ON g.id = v.id_glasu
@@ -58,8 +78,16 @@ class Repo:
         return g
 
     
-    def dobi_pevce(): # za dropdown seznam
-        return
+    def dobi_pevce(self) -> List[pevec]: # za dropdown seznam
+        self.cur.execute("""
+            SELECT p.id, p.ime, g.id AS id_glasu
+            FROM pevec p
+            JOIN glas g ON p.id_glasu = g.id
+        """)
+        
+        pevci = [pevec.from_dict(t) for t in self.cur.fetchall()]
+        return pevci
+    
     
     def dobi_seznam_oper(self): # za dropdown seznam, vrne seznam trojic (opera id, naslov, skladatelj)
         self.cur.execute("""
@@ -88,11 +116,33 @@ class Repo:
     
     def dodaj_predstavo(self, p : predstava): #Id je autoincrement
         self.cur.execute('''
-            INSERT into predstava(id_opere, id_operne_hise, datum, cas, cena, komentar)
+            INSERT INTO predstava(id_opere, id_operne_hise, datum, cas, cena, komentar)
             VALUES (%s, %s, %s, %s, %s, %s)
-            ''', (#neki iz cookieja,
-                  p.id_opere, p.id_operne_hise, p.datum, p.cas, p.cena, p.komentar))
+            ''', (p.id_opere, p.id_operne_hise, p.datum, p.cas, p.cena, p.komentar))
         self.conn.commit()
+
+
+    def posodobi_predstavo(self, id_predstave, datum, ura, cena, komentar):
+        self.cur.execute('''
+            UPDATE predstava
+            SET datum = %s,
+                cas = %s,
+                cena = %s,
+                komentar = %s
+            WHERE id = %s         
+            ''', (datum, ura, cena, komentar, id_predstave))
+        self.conn.commit()
+
+
+    def posodobi_vlogo(self, id_predstave, id_vloge, id_pevca):
+        self.cur.execute('''
+            UPDATE predstava_vloga
+            SET id_pevca = %s
+            WHERE id_predstave = %s
+            AND id_vloge = %s          
+            ''', (id_pevca, id_predstave, id_vloge))
+        self.conn.commit()
+
 
     def dodaj_vloge_predstavi(self, p: predstava):
         self.cur.execute("""
@@ -101,7 +151,7 @@ class Repo:
                          FROM predstava pr, vloga vl
                          WHERE pr.id_opere = vl.id_opere
                          AND pr.id_opere = %s AND pr.id_operne_hise= %s AND pr.datum= %s AND pr.cas = %s)
-            """, (p.id_opere, p.id_operne_hise, p.datum, p.cas,)) #POZOR! to ni najboljše, ker je načeloma lahko v isti operni hiši ista opera na isti dan ob istem času izvajana dvakrat. Ampak v realnem svetu to verjetno ni zelo, tako da to možnost zanemarimo - žal po nobenih drugih parametrih ne moremo poiskati idja predstave, zato se bomo morali zadovoljiti s tem - pomankljivo začetno načrtovanje
+            """, (p.id_opere, p.id_operne_hise, p.datum, p.cas,))
         self.conn.commit()
 
     def dodaj_pevca_predstavi(self, p : pevec, id_vloge : int, id_predstave : int):
@@ -185,3 +235,16 @@ class Repo:
         """)
         hise = [hisa['ime'] for hisa in self.cur.fetchall()]
         return hise
+    
+    def je_pevec_prost(self, id_pevca, id_predstave) -> bool:
+        self.cur.execute("""
+            SELECT *
+            FROM predstava_vloga pv
+            JOIN predstava p ON pv.id_predstave = p.id
+            WHERE pv.id_pevca = %s
+            AND pv.id_predstave != %s
+            AND p.datum = (SELECT datum FROM predstava WHERE id = %s)
+        """, (id_pevca, id_predstave, id_predstave))
+
+        zasedenost = self.cur.fetchall()
+        return len(zasedenost) == 0

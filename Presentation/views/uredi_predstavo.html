@@ -1,0 +1,66 @@
+%rebase('osnova.html', naslov='Uredi Predstavo', stran='uredi_predstavo', uporabnik=uporabnik)
+
+<p>Uredi Predstavo</p>
+
+<form action="/uredi_predstavo/{{predstava.id_predstave}}" method="post" class="mb-3">
+    <div class="mb-3">
+        <label for="skladatelj" class="form-label">Skladatelj</label>
+        <input type="text" class="form-control" id="skladatelj" name="skladatelj" value="{{predstava.skladatelj}}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="naslov" class="form-label">Naslov</label>
+        <input type="text" class="form-control" id="naslov" name="naslov" value="{{predstava.naslov}}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="operna_hisa" class="form-label">Operna hiša</label>
+        <input type="text" class="form-control" id="operna_hisa" name="operna_hisa" value="{{predstava.operna_hisa}}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="lokacija" class="form-label">Lokacija</label>
+        <input type="text" class="form-control" id="lokacija" name="lokacija" value="{{predstava.lokacija}}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="datum" class="form-label">Datum</label>
+        <input type="date" class="form-control" id="datum" name="datum" value="{{predstava.datum.strftime('%Y-%m-%d')}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="cas" class="form-label">Čas</label>
+        <input type="time" class="form-control" id="cas" name="cas" value="{{predstava.cas.strftime('%H:%M')}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="cena" class="form-label">Cena (€)</label>
+        <input type="number" step="0.01" class="form-control" id="cena" name="cena" value="{{predstava.cena}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="trajanje" class="form-label">Trajanje (min)</label>
+        <input type="number" class="form-control" id="trajanje" name="trajanje" value="{{predstava.trajanje}}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="komentar" class="form-label">Komentar</label>
+        <textarea class="form-control" id="komentar" name="komentar">{{predstava.komentar}}</textarea>
+    </div>
+
+    <h3>Vloge</h3>
+    % if vloge:
+        % for vloga in vloge:
+            <div class="mb-3">
+                <label for="vloga_{{vloga.id_vloge}}" class="form-label">{{vloga.ime_vloge}} ({{vloga.fach}})</label>
+                <select class="form-control" id="vloga_{{vloga.id_vloge}}" name="vloga_{{vloga.id_vloge}}">
+                    <option value="">Izberi pevca</option>
+                    % for pevec in pevci:
+                        % if pevec.id_glasu == vloga.id_glasu:
+                            <option value="{{pevec.id}}" {{'selected' if vloga.id_pevca == pevec.id else ''}}>{{pevec.ime}}</option>
+                        % end
+                    % end
+                </select>
+            </div>
+        % end
+    % else:
+        <p>Ni vlog za to predstavo.</p>
+    % end
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="submit" class="btn btn-primary button">Shrani</button>
+        <a href="/predstave_user" class="btn btn-secondary button">Prekliči</a>
+    </div>
+</form>
