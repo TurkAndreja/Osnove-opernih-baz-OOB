@@ -29,14 +29,13 @@ class PredstaveService:
     
     def id_uporabnika(self):
         username = request.get_cookie("uporabnik")  
-        # Iz usernama moramo dobiti id_operne_hise, ki je zapisan v kukiju
+        # Iz usernama moramo dobiti id_operne_hise, ki je zapisan v cookie-ju
         u = self.repo.dobi_uporabnika(username)
         return u.id_operne_hise
 
     def ustvari_predstavo(self,  id_opere : int, datum_str: str, ura_str : str, cena_str: str, komentar: str ) -> None:
 
         username = request.get_cookie("uporabnik") 
-
         # Iz usernama moramo dobiti id_operne_hise, ki je zapisan v cookie-ju
         u = self.repo.dobi_uporabnika(username)
 
@@ -44,7 +43,7 @@ class PredstaveService:
         ura = datetime.strptime(ura_str, "%H:%M").time()  # Ura tipa time za v bazo
         cena = float(cena_str)
 
-        # objekt za predstavo
+        # Objekt za predstavo
         p = predstava(
                 id_opere=id_opere,
                 id_operne_hise=u.id_operne_hise,            
@@ -54,7 +53,7 @@ class PredstaveService:
                 komentar=komentar
                 )
         
-        # zapis v bazo
+        # Zapis v bazo
         self.repo.dodaj_predstavo(p)      
         self.repo.dodaj_vloge_predstavi(p)
 
@@ -73,16 +72,13 @@ class PredstaveService:
     def ustvari_opero(self, naslov: str, skladatelj:str, trajanje: int, leto: int) -> None:
        
         # Naredimo objekt za opero
-        # Za to potrebujemo številko računa.
-        
-        # Naredimo objekt za transakcijo
         o = opera(
             naslov=naslov,
             skladatelj=skladatelj,
             trajanje=trajanje,
             leto=leto
             )        
-        # uporabimo repozitorij za zapis v bazo
+        # Uporabimo repozitorij za zapis v bazo
         self.repo.dodaj_opero(o)
 
 
@@ -91,7 +87,7 @@ class PredstaveService:
         o = self.repo.dobi_opero(ime_opere)
         id_opere = o.id
 
-        nove_dvojice = []           #dvojice, kjer je najprej vloga in potem id glasu, ne pa vloga in tip glasu
+        nove_dvojice = [] # Dvojice, kjer je najprej vloga in potem id glasu
         for vloga, fach in dvojice:
             g = self.repo.dobi_glas(fach)
             g_id = g.id
