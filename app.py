@@ -170,7 +170,7 @@ def dodaj_opero():
     service.ustvari_opero(naslov, skladatelj, trajanje, leto)
 
 
-    vloge = [vloga.decode('utf-8') for vloga in request.forms.getlist('vloga[]')]
+    vloge = request.forms.getlist('vloga[]')
     fachi = request.forms.getlist('fach[]')
     dvojice = list(zip(vloge, fachi))
 
@@ -184,7 +184,7 @@ def dodaj_opero():
     """
     Stran za dodajanje pevca. 
     """
-    #response.content_type = 'text/html; charset=UTF-8'
+
     seznam = service.dobi_seznam_glasov()
     return template_user('dodaj_pevca.html', seznam_glasov = seznam)
 
@@ -197,7 +197,7 @@ def dodaj_pevca():
     id_glas = int(request.forms.get('glas'))
 
     service.ustvari_pevca(ime, id_glas)
-    #response.content_type = 'text/html; charset=UTF-8'
+
 
     redirect(url('/predstave_user'))
 
